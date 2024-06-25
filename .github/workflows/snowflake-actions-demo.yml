@@ -29,3 +29,9 @@ jobs:
           run: |
            snow --version
            snow connection test
+          
+          # Deploy data pipeline
+        - name: Deploy data pipeline
+          run: |
+            snow sql -q "ALTER GIT REPOSITORY YL_DB.INTEGRATIONS.SNOWFLAKE_EXTENSIONS FETCH" 
+            snow sql -q "EXECUTE IMMEDIATE FROM @YL_DB.INTEGRATIONS.SNOWFLAKE_EXTENSIONS/branches/main/snowsql/ddl/create_schema.sql"
