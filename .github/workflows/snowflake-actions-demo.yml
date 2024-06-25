@@ -37,4 +37,4 @@ jobs:
           SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
       - name: Test SnowSQL
         run: |
-          ~/bin/snowsql -q 'select current_version()' -o friendly=false -a $SNOWFLAKE_ACCOUNTNAME -u $SNOWFLAKE_USER  --private-key-path file://.github/config/rsa_key.p8
+          ~/bin/snowsql -q 'select current_version()' -o friendly=false -a $SNOWFLAKE_ACCOUNTNAME -u $SNOWFLAKE_USER  --private-key-path "file://.github/config/rsa_key.p8"
