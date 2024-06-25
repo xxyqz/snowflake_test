@@ -27,7 +27,7 @@ jobs:
           # Use the CLI
         - name: Test version
           run: |
-           snowsql --version
+           ~/bin/snowsql --version
         - name: Test SnowSQL
           run: |
-           snowsql -q 'select current_version()' -c yanluc
+           ~/bin/snowsql -q 'select current_version()' -c yanluc
