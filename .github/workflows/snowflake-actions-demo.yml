@@ -1,36 +1,42 @@
-name: Deploy data pipeline to prod
+# Very basic GitHub Action workflow, goes in ~/.github/workflows/deploy.yaml
 
-# Controls when the action will run.
+name: CI
+
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on any branch or tag commit
   push:
     branches:
-      - main
+      - "*"
+    tags:
+      - "v*"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
+  # This workflow contains a single job called "deploy"
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWSQL_USER: ${{ secrets.SNOWFLAKE_USERNAME }}
+      SNOWSQL_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+      SNOWSQL_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+      SNOWSQL_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+      SNOWSQL_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
 
-      - name: Setup Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install Python packages
-        run: pip install -r requirements.txt
-
-      - name: Deploy data pipeline
-        env:
-          SNOWFLAKE_ACCOUNTNAME: ${{ secrets.SNOWFLAKE_ACCOUNTNAME }}
-          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+      - name: Install SnowSQL
         run: |
-          snow sql -q "ALTER GIT REPOSITORY yl_db.integrations.snowflake_extensions FETCH" --temporary-connection --account $SNOWFLAKE_ACCOUNTNAME --user $SNOWFLAKE_USER  -- role $SNOWFLAKE_ROLE
-          snow sql -q "EXECUTE IMMEDIATE FROM @snowsql/ddl/create_schema.sql" --temporary-connection --account $SNOWFLAKE_ACCOUNTNAME --user $SNOWFLAKE_USER --host $SNOWFLAKE_HOST
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
+          SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
+      - name: Test SnowSQL
+        run: |
+          ~/bin/snowsql -q 'select current_version()' -o friendly=false
