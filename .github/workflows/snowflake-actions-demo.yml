@@ -2,7 +2,7 @@ name: deploy
 on: [push]
 jobs:
   version:
-     name: "Check Snowflake CLI version"
+     name: "Snowflake CI/CD Test"
      runs-on: ubuntu-latest
      env:
         SNOWFLAKE_CONNECTIONS_MYCONNECTION_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
