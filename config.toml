@@ -4,9 +4,9 @@ default_connection_name = "yanluc"
 [connections]          
 [connections.yanluc]
 
-accountname = PCNSVPZ-ASB46529
-username = yanluc
-password = Mypassword123
-warehousename = COMPUTE_WH
-dbname = YL_DB
-schemaname = PUBLIC 
+accountname = "PCNSVPZ-ASB46529"
+username = "yanluc"
+password = "Mypassword123"
+warehousename = "COMPUTE_WH"
+dbname = "YL_DB"
+schemaname = "PUBLIC"
