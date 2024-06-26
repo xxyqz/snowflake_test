@@ -1,5 +1,9 @@
 name: deploy
-on: [push]
+on: 
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - dev
 jobs:
   version:
      name: "Snowflake CI/CD Test"
